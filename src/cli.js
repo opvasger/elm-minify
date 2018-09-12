@@ -2,6 +2,7 @@
 
 var fs = require("fs")
 var ujs = require("uglify-js")
+var _ = require("konsole.table")
 
 var inputPath = process.argv[2] || "dist/index.js"
 
