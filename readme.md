@@ -6,19 +6,25 @@ Minify compiled Elm modules!
 ![](/example.gif)
 
 ## How Do I Use It?
-The cli is distributed through NPM:
+The CLI is distributed through NPM:
 
-    npm i -g elm-minify
+```bash
+npm i -g elm-minify
+```
 
 Compile your Elm module, for example like this:
 
-    elm make --optimize --output=dist/main.js
+```bash
+# remember the "--optimize" flag
+elm make --optimize --output=dist/main.js
+```
 
-**Remember the `--optimize` flag**. Minify to `dist/main.min.js` like this:
+Minify to `dist/main.min.js` like this:
 
-    elm-minify dist/main.js
-
-If no file is specified for `elm-minify`, it will try to minify `dist/index.js`.
+```bash
+# it will try to use "dist/index.js" if no path is specified
+elm-minify dist/main.js
+```
 
 Take a look at [this example](/example).
 
