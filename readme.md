@@ -20,7 +20,7 @@ Compile your Elm module, for example like this:
 
 If no file is specified for `elm-minify`, it will try to minify `dist/index.js`.
 
-If you're still not sure, take a look at [this example](/example) .
+Take a look at [this example](/example).
 
 ## Can I Use it?
 This project should be compatible with the latest versions of mentioned projects:
