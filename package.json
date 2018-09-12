@@ -1,0 +1,17 @@
+{
+  "name": "elm-minify",
+  "version": "1.0.0",
+  "description": "Minify compiled Elm modules!",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opvasger/elm-minify.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/opvasger/elm-minify/issues"
+  },
+  "homepage": "https://github.com/opvasger/elm-minify#readme"
+}
