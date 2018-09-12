@@ -5,9 +5,7 @@
   "bin": {
     "elm-minify": "src/cli.js"
   },
-  "scripts": {
-    "symlink": "npm link"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/opvasger/elm-minify.git"
@@ -18,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/opvasger/elm-minify/issues"
   },
-  "homepage": "https://github.com/opvasger/elm-minify#readme"
+  "homepage": "https://github.com/opvasger/elm-minify#readme",
+  "dependencies": {
+    "uglify-js": "3.4.9"
+  }
 }
