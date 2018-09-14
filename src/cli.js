@@ -4,7 +4,36 @@ var zlib = require("zlib")
 var ujs = require("uglify-js")
 var _ = require("konsole.table")
 
-var inputPath = process.argv[2] || "dist/index.js"
+var pkg = require("../package.json")
+
+var inputArg = process.argv[2]
+
+switch (inputArg) {
+
+    case "--version": return console.log(pkg.version)
+
+    case "--help": return console.log([
+        "",
+        "   elm-minify " + pkg.version,
+        "",
+        "Usage:",
+        "",
+        "   elm-minify <input>",
+        "",
+        "Inputs:",
+        "",
+        "   <filepath>.js       Minify to <filepath>.min.js",
+        "   --version           Show package version",
+        "   --help              Show this help message",
+        "",
+        "   If no <input> is specified, 'dist/index.js' is used",
+        ""
+    ].join("\n"))
+
+    default:
+}
+
+var inputPath = inputArg || "dist/index.js"
 
 var outputPath = inputPath.replace(".js", ".min.js")
 

@@ -1,6 +1,6 @@
 {
   "name": "elm-minify",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Minify compiled Elm modules!",
   "bin": {
     "elm-minify": "src/cli.js"
