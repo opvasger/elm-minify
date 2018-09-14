@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-
 var fs = require("fs")
+var zlib = require("zlib")
 var ujs = require("uglify-js")
 var _ = require("konsole.table")
 
@@ -8,11 +8,9 @@ var inputPath = process.argv[2] || "dist/index.js"
 
 var outputPath = inputPath.replace(".js", ".min.js")
 
-var inputStatus = fs.lstatSync(inputPath)
+var inputCode = fs.readFileSync(inputPath, { encoding: "utf8" })
 
-var inputFile = fs.readFileSync(inputPath, { encoding: "utf8" })
-
-var outputResult = ujs.minify(ujs.minify(inputFile, {
+var compressionResult = ujs.minify(inputCode, {
     mangle: false,
     compress: {
         pure_funcs: ["F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"],
@@ -22,9 +20,17 @@ var outputResult = ujs.minify(ujs.minify(inputFile, {
         unsafe: true,
         passes: 2
     }
-}).code, {
-        mangle: true, compress: false
-    })
+})
+
+if (compressionResult.error) {
+
+    throw compressionResult.error
+}
+
+var outputResult = ujs.minify(compressionResult.code, {
+    mangle: true,
+    compress: false
+})
 
 if (outputResult.error) {
 
@@ -33,9 +39,27 @@ if (outputResult.error) {
 
 fs.writeFileSync(outputPath, outputResult.code, { encoding: "utf8" })
 
-var outputStatus = fs.lstatSync(outputPath)
+var inputCodeSize = fs.lstatSync(inputPath).size / 1000
+var outputSize = fs.lstatSync(outputPath).size / 1000
+var outputGzipSize = zlib.gzipSync(outputResult.code).byteLength / 1000
+
+var pathHeader = "(relative path)"
+var sizeHeader = "(kilobyte size)"
 
 console.table({
-    ["INPUT (" + inputPath + ")"]: { ["SIZE (KB)"]: inputStatus.size / 1000 },
-    ["OUTPUT (" + outputPath + ")"]: { ["SIZE (KB)"]: outputStatus.size / 1000 }
-})
+    "input": {
+        [pathHeader]: inputPath,
+        [sizeHeader]: inputCodeSize
+    },
+    "output": {
+        [pathHeader]: outputPath,
+        [sizeHeader]: outputSize
+    },
+    "gzip": {
+        [sizeHeader]: outputGzipSize
+    }
+}, [
+        pathHeader,
+        sizeHeader
+    ]
+)
