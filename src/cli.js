@@ -2,9 +2,9 @@
 var fs = require("fs")
 var zlib = require("zlib")
 var ujs = require("uglify-js")
-var _ = require("konsole.table")
 
 var pkg = require("../package.json")
+var lib = require("./lib.js")
 
 var inputArg = process.argv[2]
 
@@ -68,27 +68,16 @@ if (outputResult.error) {
 
 fs.writeFileSync(outputPath, outputResult.code, { encoding: "utf8" })
 
-var inputCodeSize = fs.lstatSync(inputPath).size / 1000
+var inputSize = fs.lstatSync(inputPath).size / 1000
 var outputSize = fs.lstatSync(outputPath).size / 1000
 var outputGzipSize = zlib.gzipSync(outputResult.code).byteLength / 1000
 
-var pathHeader = "(relative path)"
-var sizeHeader = "(kilobyte size)"
-
-console.table({
-    "input": {
-        [pathHeader]: inputPath,
-        [sizeHeader]: inputCodeSize
-    },
-    "output": {
-        [pathHeader]: outputPath,
-        [sizeHeader]: outputSize
-    },
-    "gzip": {
-        [sizeHeader]: outputGzipSize
-    }
-}, [
-        pathHeader,
-        sizeHeader
-    ]
-)
+console.log([
+    "┌────────┬─────────────────────┬─────────┐",
+    "│ source │ rel path            │ kb size │",
+    "├────────┼─────────────────────┼─────────┤",
+    "│  input │ " + lib.pad(inputPath, 20) + "│" + lib.pad(inputSize, 8, true) + " │",
+    "│ output │ " + lib.pad(outputPath, 20) + "│" + lib.pad(outputSize, 8, true) + " │",
+    "│   gzip │                     │" + lib.pad(outputGzipSize, 8, true) + " │",
+    "└────────┴─────────────────────┴─────────┘"
+].join("\n"))
