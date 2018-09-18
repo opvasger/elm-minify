@@ -18,15 +18,15 @@ switch (inputArg) {
         "",
         "Usage:",
         "",
-        "   elm-minify <input>",
+        "   elm-minify <input> [--rounds=<rounds>]",
         "",
-        "Inputs:",
+        "<input>:               Defaults to 'dist/index.js'",
         "",
         "   <filepath>.js       Minify to <filepath>.min.js",
         "   --version           Show package version",
         "   --help              Show this help message",
         "",
-        "   If no <input> is specified, 'dist/index.js' is used",
+        "<rounds>               Number of compression rounds. Defaults to 2.",
         ""
     ].join("\n"))
 
