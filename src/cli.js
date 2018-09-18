@@ -7,6 +7,7 @@ var pkg = require("../package.json")
 var lib = require("./lib.js")
 
 var inputArg = process.argv[2]
+var extraRoundArg = process.argv.indexOf("--extra-round") !== -1
 
 switch (inputArg) {
 
@@ -20,13 +21,14 @@ switch (inputArg) {
         "",
         "   elm-minify <input>",
         "",
-        "Inputs:",
+        "<input>:                   Defaults to 'dist/index.js'",
         "",
-        "   <filepath>.js       Minify to <filepath>.min.js",
-        "   --version           Show package version",
-        "   --help              Show this help message",
+        "   <filepath>.js           Minify to <filepath>.min.js",
         "",
-        "   If no <input> is specified, 'dist/index.js' is used",
+        "       [--extra-round]     Run an additional round of compression",
+        "",
+        "   --version                       Show package version",
+        "   --help                          Show this help message",
         ""
     ].join("\n"))
 
@@ -47,7 +49,7 @@ var compressionResult = ujs.minify(inputCode, {
         keep_fargs: false,
         unsafe_comps: true,
         unsafe: true,
-        passes: 2
+        passes: extraRoundArg ? 3 : 2
     }
 })
 
