@@ -8,6 +8,7 @@ var lib = require("./lib.js")
 
 var inputArg = process.argv[2]
 var extraRoundArg = process.argv.indexOf("--extra-round") !== -1
+var replaceInputArg = process.argv.indexOf("--replace") !== -1
 
 switch (inputArg) {
 
@@ -26,6 +27,7 @@ switch (inputArg) {
         "   <filepath>.js           Minify to <filepath>.min.js",
         "",
         "       [--extra-round]     Run an additional round of compression",
+        "       [--replace]         Overwrite the input file with minified output",
         "",
         "   --version                       Show package version",
         "   --help                          Show this help message",
@@ -35,9 +37,9 @@ switch (inputArg) {
     default:
 }
 
-var inputPath = inputArg || "dist/index.js"
+var inputPath = inputArg === undefined || inputArg.startsWith("--") ? "dist/index.js" : inputArg
 
-var outputPath = inputPath.replace(".js", ".min.js")
+var outputPath = replaceInputArg ? inputPath : inputPath.replace(".js", ".min.js")
 
 var inputCode = fs.readFileSync(inputPath, { encoding: "utf8" })
 
@@ -68,9 +70,10 @@ if (outputResult.error) {
     throw outputResult.error
 }
 
+var inputSize = fs.lstatSync(inputPath).size / 1000
+
 fs.writeFileSync(outputPath, outputResult.code, { encoding: "utf8" })
 
-var inputSize = fs.lstatSync(inputPath).size / 1000
 var outputSize = fs.lstatSync(outputPath).size / 1000
 var outputGzipSize = zlib.gzipSync(outputResult.code).byteLength / 1000
 
