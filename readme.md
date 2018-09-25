@@ -32,7 +32,7 @@ elm-minify dist/main.js
 More optimizations for Elm are described in [the official guide](https://guide.elm-lang.org/optimization/)
 
 ## If It Isn't Working
-The CLI has a number of flags to modify behavior, describe here:
+The CLI has a number of flags to modify behavior, described here:
 
 ```bash
 elm-minify --help
