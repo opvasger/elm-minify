@@ -18,18 +18,18 @@ For example:
 1. Compile your Elm module:
 
 ```bash
-# remember the "--optimize" flag
 elm make --optimize --output=dist/main.js
 ```
 
 2. Minify to `dist/main.min.js`:
 
 ```bash
-# it will try to use "dist/index.js" if no path is specified
 elm-minify dist/main.js
 ```
 
-More optimizations for Elm are described in [the official guide](https://guide.elm-lang.org/optimization/)
+Examples of usage and [Webpack](https://webpack.js.org/)-integration can be found in [`/examples`](https://github.com/opvasger/elm-minify/tree/master/examples).
+
+More optimizations for Elm can be found in [the official guide](https://guide.elm-lang.org/optimization/)
 
 ## If It Isn't Working
 The CLI has a number of flags to modify behavior, described here:
