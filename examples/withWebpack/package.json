@@ -1,0 +1,16 @@
+{
+  "name": "elm-minify-webpack-example",
+  "version": "1.0.0",
+  "description": "Use elm-minify with webpack!",
+  "scripts": {
+    "build": "webpack --mode=production"
+  },
+  "keywords": [],
+  "author": "asger nielsen <opvasger@gmail.com>",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "elm-webpack-loader": "5.0.0",
+    "webpack": "4.20.2",
+    "webpack-cli": "3.1.2"
+  }
+}
