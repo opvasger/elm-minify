@@ -1,3 +1,5 @@
+var ElmMinify = require("../../src/api.js")
+
 module.exports = {
     target: "web",
     entry: "./src/index.js",
@@ -17,5 +19,8 @@ module.exports = {
                 }
             }
         ]
-    }
+    },
+    plugins: [
+        new ElmMinify.WebpackPlugin()
+    ]
 }

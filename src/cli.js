@@ -1,88 +1,152 @@
 #!/usr/bin/env node
+
 var fs = require("fs")
 var zlib = require("zlib")
-var ujs = require("uglify-js")
 
 var pkg = require("../package.json")
-var lib = require("./lib.js")
+var api = require("./api.js")
 
-var inputArg = process.argv[2]
-var extraRoundArg = process.argv.indexOf("--extra-round") !== -1
-var replaceInputArg = process.argv.indexOf("--replace") !== -1
+var Msg = {
+    PrintHelp: 0,
+    PrintVersion: 1,
+    MinifyFile: 2
+}
 
-switch (inputArg) {
+var defaultConfig = {
+    msg: Msg.MinifyFile,
+    inputFilePath: "dist/index.js",
+    extraRound: false,
+    replace: false
+}
 
-    case "--version": return console.log(pkg.version)
+var fileReadWriteConfig = { encoding: "utf8" }
 
-    case "--help": return console.log([
-        "",
-        "   elm-minify " + pkg.version,
-        "",
-        "Usage:",
-        "",
-        "   elm-minify <input>",
-        "",
-        "<input>:                   Defaults to 'dist/index.js'",
-        "",
-        "   <filepath>.js           Minify to <filepath>.min.js",
-        "",
-        "       [--extra-round]     Run an additional round of compression",
-        "       [--replace]         Overwrite the input file with minified output",
-        "",
-        "   --version                       Show package version",
-        "   --help                          Show this help message",
-        ""
-    ].join("\n"))
+var toKb = function (byteLength) {
+
+    return byteLength / 1000
+}
+
+var toString = function (a) {
+    return a + ""
+}
+
+var argvToConfig = function (argv) {
+
+    var cmdOrFilePath = argv[2]
+
+    switch (cmdOrFilePath) {
+
+        case "--help":
+            return { msg: Msg.PrintHelp }
+
+        case "--version":
+            return { msg: Msg.PrintVersion }
+
+        default:
+
+            var config = defaultConfig
+
+            config.inputFilePath = cmdOrFilePath
+            config.extraRound = argv.indexOf("--extraRound") !== -1
+            config.replace = argv.indexOf("--replace") !== -1
+
+            return config
+    }
+
+}
+
+var padString = function (text, length, toRight) {
+
+    var lengthDiff = length - text.length
+
+    if (lengthDiff > 0) {
+
+        return toRight
+            ? " ".repeat(lengthDiff).concat(text)
+            : text.concat(" ".repeat(lengthDiff))
+    }
+    else if (lengthDiff < 0) {
+
+        return text.slice(0, length)
+    }
+    else {
+
+        return text
+    }
+}
+
+var toResultString = function (srcPathSizeArray) {
+
+    var toResultEntry = function (srcPathSize) {
+
+        return "│ "
+            + padString(srcPathSize[0], 6, true) + " │ "
+            + padString(srcPathSize[1], 18, false) + " │ "
+            + padString(srcPathSize[2], 10, true) + " │"
+    }
+
+    return [
+        "┌────────┬────────────────────┬────────────┐",
+        "│ source │ rel path           │    kb size │",
+        "├────────┼────────────────────┼────────────┤",
+    ]
+        .concat(srcPathSizeArray.map(toResultEntry))
+        .concat([
+            "└────────┴────────────────────┴────────────┘"
+        ])
+        .join("\n")
+}
+
+var helpString = [
+    "",
+    "   elm-minify " + pkg.version,
+    "",
+    "Usage:",
+    "",
+    "   elm-minify <input>",
+    "",
+    "<input>:                   Defaults to 'dist/index.js'",
+    "",
+    "   <filepath>.js           Minify to <filepath>.min.js",
+    "",
+    "       [--extra-round]     Run an additional round of compression",
+    "       [--replace]         Overwrite the input file with minified output",
+    "",
+    "   --version                       Show package version",
+    "   --help                          Show this help message",
+    ""
+].join("\n")
+
+var config = argvToConfig(process.argv)
+
+switch (config.msg) {
+
+    case Msg.PrintHelp:
+        return console.log(helpString)
+
+    case Msg.PrintVersion:
+        return console.log(pkg.version)
+
+    case Msg.MinifyFile:
+
+        var inputFileSize = fs.lstatSync(config.inputFilePath).size
+
+        var elmJs = fs.readFileSync(config.inputFilePath, fileReadWriteConfig)
+
+        var minElmJs = api.minify(elmJs, config.extraRound ? 3 : 2)
+
+        var outputFilePath = config.replace
+            ? config.inputFilePath
+            : config.inputFilePath.replace(".js", "") + ".min.js"
+
+        fs.writeFileSync(outputFilePath, minElmJs, fileReadWriteConfig)
+
+        return console.log(toResultString([
+            ["input", config.inputFilePath, toString(toKb(inputFileSize))],
+            ["output", outputFilePath, toString(toKb(fs.lstatSync(outputFilePath).size))],
+            ["gzip", "", toString(toKb(zlib.gzipSync(minElmJs).byteLength))]
+        ]))
 
     default:
+        throw Error("Invalid configuration message", config)
 }
-
-var inputPath = inputArg === undefined || inputArg.startsWith("--") ? "dist/index.js" : inputArg
-
-var outputPath = replaceInputArg ? inputPath : inputPath.replace(".js", ".min.js")
-
-var inputCode = fs.readFileSync(inputPath, { encoding: "utf8" })
-
-var compressionResult = ujs.minify(inputCode, {
-    mangle: false,
-    compress: {
-        pure_funcs: ["F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"],
-        pure_getters: true,
-        keep_fargs: false,
-        unsafe_comps: true,
-        unsafe: true,
-        passes: extraRoundArg ? 3 : 2
-    }
-})
-
-if (compressionResult.error) {
-
-    throw compressionResult.error
-}
-
-var outputResult = ujs.minify(compressionResult.code, {
-    mangle: true,
-    compress: false
-})
-
-if (outputResult.error) {
-
-    throw outputResult.error
-}
-
-var inputSize = fs.lstatSync(inputPath).size / 1000
-
-fs.writeFileSync(outputPath, outputResult.code, { encoding: "utf8" })
-
-var outputSize = fs.lstatSync(outputPath).size / 1000
-var outputGzipSize = zlib.gzipSync(outputResult.code).byteLength / 1000
-
-console.log([
-    "┌────────┬─────────────────────┬─────────┐",
-    "│ source │ rel path            │ kb size │",
-    "├────────┼─────────────────────┼─────────┤",
-    "│  input │ " + lib.pad(inputPath, 20) + "│" + lib.pad(inputSize, 8, true) + " │",
-    "│ output │ " + lib.pad(outputPath, 20) + "│" + lib.pad(outputSize, 8, true) + " │",
-    "│   gzip │                     │" + lib.pad(outputGzipSize, 8, true) + " │",
-    "└────────┴─────────────────────┴─────────┘"
-].join("\n"))
