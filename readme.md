@@ -52,7 +52,7 @@ Options: {
     extraRound: true | false | undefined
 }
 ```
-The plugin will, in production mode, detect when Webpack is loading files with `.elm` extensions, and minify their content before bundling. The overhead of using this compared to the CLI is ~600 bytes for my [examples](https://github.com/opvasger/elm-minify/tree/master/examples). The Webpack configuration can be found [here](https://github.com/opvasger/elm-minify/blob/master/examples/withWebpack/webpack.config.js)
+The plugin will, in production mode, detect when Webpack is loading files with `.elm` extensions, and minify their content before bundling. The overhead of using this compared to the CLI is ~600 bytes for my [examples](https://github.com/opvasger/elm-minify/tree/master/examples). The Webpack configuration can be found [here](https://github.com/opvasger/elm-minify/blob/master/examples/withWebpack/webpack.config.js).
 
 ### minify
 ```(elmJs : String) => String```
