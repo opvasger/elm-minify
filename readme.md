@@ -27,7 +27,7 @@ elm make --optimize --output=dist/main.js
 elm-minify dist/main.js
 ```
  
-- `elm-minify` can be plugged into [Webpack](https://webpack.js.org/) using [this Node.js API](https://github.com/opvasger/elm-minify#node.js-api)
+- `elm-minify` can be plugged into [Webpack](https://webpack.js.org/) using [this Node.js API](https://github.com/opvasger/elm-minify#nodejs-api)
 
 - More optimizations for Elm can be found in [the official guide](https://guide.elm-lang.org/optimization/)
 
