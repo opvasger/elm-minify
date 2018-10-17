@@ -21,6 +21,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new ElmMinify.WebpackPlugin()
+        new ElmMinify.WebpackPlugin({ extraRound: false })
     ]
 }

@@ -1,4 +1,5 @@
 var ujs = require("uglify-js")
+var src = require("webpack-sources")
 
 var toUglifyJsCompressionConfig = function (passes) {
 
@@ -38,24 +39,39 @@ var minify = function (elmJs, compressionPasses) {
 
 var toWebpackPluginConfig = function (obj) {
 
-    throw Error("todo")
+    return {
+        extraRound: obj && obj.extraRound === true
+    }
 }
 
 var WebpackPlugin = function (obj) {
 
+    var tapConfig = { name: "elm-minify" }
+
     var config = toWebpackPluginConfig(obj)
 
-    throw Error("todo")
+    this.apply = function (compiler) {
 
-    this.prototype.apply = function (compiler) {
+        if (compiler.options.mode !== "production") return;
 
-        throw Error("todo")
+        compiler.hooks.compilation.tap(tapConfig, function (compilation) {
+
+            compilation.hooks.optimizeDependencies.tap(tapConfig, function (modules) {
+
+                modules.forEach(function (module) {
+
+                    if (module.resource.endsWith(".elm") === false) return;
+
+                    module._source = new src.RawSource(minify(module._source.source(), 2))
+                })
+            })
+        })
     }
 }
 
 module.exports = {
     toUglifyJsCompressionConfig: toUglifyJsCompressionConfig,
     uglifyJsMangleConfig: uglifyJsMangleConfig,
-    minify: minify,
-    WebpackPlugin: WebpackPlugin
+    WebpackPlugin: WebpackPlugin,
+    minify: minify
 }
