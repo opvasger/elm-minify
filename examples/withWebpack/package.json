@@ -1,7 +1,7 @@
 {
-  "name": "elm-minify-webpack-example",
+  "name": "with-webpack",
   "version": "1.0.0",
-  "description": "Use elm-minify with webpack!",
+  "description": "Plug elm-minify into webpack!",
   "scripts": {
     "build": "webpack --mode=production"
   },

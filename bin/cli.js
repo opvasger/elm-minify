@@ -4,7 +4,7 @@ var fs = require("fs")
 var zlib = require("zlib")
 
 var pkg = require("../package.json")
-var api = require("./api.js")
+var api = require("../src/api.js")
 
 var Msg = {
     PrintHelp: 0,

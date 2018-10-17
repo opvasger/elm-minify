@@ -6,14 +6,14 @@ Minify compiled Elm modules!
 
 ![](/example.gif)
 
-## How To Use It
+## Get Started
 The CLI is distributed through [NPM](https://www.npmjs.com/package/elm-minify):
 
 ```bash
 npm i -g elm-minify
 ```
 
-For example:
+Here is how it works:
 
 1. Compile your Elm module:
 
@@ -26,12 +26,12 @@ elm make --optimize --output=dist/main.js
 ```bash
 elm-minify dist/main.js
 ```
+ 
+- `elm-minify` can be plugged into [Webpack](https://webpack.js.org/) using [this Node.js API](https://github.com/opvasger/elm-minify#node.js-api)
 
-Examples of usage and [Webpack](https://webpack.js.org/)-integration can be found in [`/examples`](https://github.com/opvasger/elm-minify/tree/master/examples).
+- More optimizations for Elm can be found in [the official guide](https://guide.elm-lang.org/optimization/)
 
-More optimizations for Elm can be found in [the official guide](https://guide.elm-lang.org/optimization/)
-
-## If It Isn't Working
+## Configuration
 The CLI has a number of flags to modify behavior, described here:
 
 ```bash
@@ -39,3 +39,32 @@ elm-minify --help
 ```
 
 If it doesn't fit your needs or something isn't working, let me know with [a fresh issue](https://github.com/opvasger/elm-minify/issues/new)!
+
+## Node.js API
+This package exposes a node module from it's root. It gives programmatic access to `elm-minify` for various purposes described here:
+
+### WebpackPlugin
+```Class (options : Options) => Webpack Plugin```
+
+Plug `elm-minify` into [Webpack](https://webpack.js.org/) with options similar to the CLI:
+```
+Options: {
+    extraRound: true | false | undefined
+}
+```
+The plugin will, in production mode, detect when Webpack is loading files with `.elm` extensions, and minify their content before bundling. The overhead of using this compared to the CLI is ~600 bytes for my [examples](https://github.com/opvasger/elm-minify/tree/master/examples)
+
+### minify
+```(elmJs : String) => String```
+
+Minify compiled elm code synchronously
+
+### toUglifyCompressionConfig
+```(extraRound: Boolean) => UglifyJs Configuration```
+
+Get the UglifyJs configuration for the compression-pass during minification
+
+### uglifyJsMangleConfig
+```UglifyJs Configuration```
+
+Get the UglifyJs configuration for the mangling-pass during minification

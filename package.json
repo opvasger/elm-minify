@@ -1,9 +1,10 @@
 {
   "name": "elm-minify",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Minify compiled Elm modules!",
+  "main": "src/api.js",
   "bin": {
-    "elm-minify": "src/cli.js"
+    "elm-minify": "bin/cli.js"
   },
   "scripts": {},
   "repository": {
