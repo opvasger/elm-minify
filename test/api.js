@@ -1,9 +1,9 @@
 var assert = require("assert")
 
-describe("the Node.js API", function () {
+describe("Node.js API", function () {
 
-    it("should pass", function () {
+    it("should have tests", function () {
 
-        assert.strictEqual(1, 1)
+        assert.strictEqual(true, false, "no tests yet...")
     })
 })

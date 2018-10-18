@@ -1,9 +1,9 @@
 var assert = require("assert")
 
-describe("the CLI", function () {
+describe("CLI", function () {
 
-    it("should pass", function () {
+    it("should have tests", function () {
 
-        assert.strictEqual(1, 1)
+        assert.strictEqual(true, false, "no tests yet...")
     })
 })
