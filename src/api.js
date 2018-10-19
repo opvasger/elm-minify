@@ -44,6 +44,10 @@ var toWebpackPluginConfig = function (obj) {
     }
 }
 
+var endsWith = function (search, text) {
+    return text.substring(text.length - search.length) === search
+}
+
 var WebpackPlugin = function (obj) {
 
     var tapConfig = { name: "elm-minify" }
@@ -60,7 +64,7 @@ var WebpackPlugin = function (obj) {
 
                 modules.forEach(function (module) {
 
-                    if (module.resource.endsWith(".elm") === false) return;
+                    if (endsWith(".elm", module.resource) === false) return;
 
                     module._source = new src.RawSource(minify(module._source.source(), 2))
                 })
