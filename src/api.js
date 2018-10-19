@@ -44,8 +44,20 @@ var toWebpackPluginConfig = function (obj) {
     }
 }
 
-var endsWith = function (search, text) {
-    return text.substring(text.length - search.length) === search
+var isCompilingToProduction = function (compiler) {
+
+    return compiler
+        && compiler.options
+        && compiler.options.mode === "production"
+}
+
+var isOptimizedElmLoader = function (loader) {
+
+    return loader
+        && loader.loader
+        && loader.loader.indexOf("elm-webpack-loader") !== -1
+        && loader.options
+        && loader.options.optimize === true
 }
 
 var WebpackPlugin = function (obj) {
@@ -56,7 +68,7 @@ var WebpackPlugin = function (obj) {
 
     this.apply = function (compiler) {
 
-        if (compiler.options.mode !== "production") return;
+        if (isCompilingToProduction(compiler) === false) return;
 
         compiler.hooks.compilation.tap(tapConfig, function (compilation) {
 
@@ -64,9 +76,9 @@ var WebpackPlugin = function (obj) {
 
                 modules.forEach(function (module) {
 
-                    if (endsWith(".elm", module.resource) === false) return;
+                    if (module.loaders === undefined || module.loaders.findIndex(isOptimizedElmLoader) === -1) return;
 
-                    module._source = new src.RawSource(minify(module._source.source(), 2))
+                    module._source = new src.RawSource(minify(module._source.source(), config.extraRound ? 3 : 2))
                 })
             })
         })
