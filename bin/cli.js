@@ -15,8 +15,7 @@ var Msg = {
 var defaultConfig = {
     msg: Msg.MinifyFile,
     inputFilePath: "dist/index.js",
-    extraRound: false,
-    replace: false
+    overwrite: false
 }
 
 var fileReadWriteConfig = { encoding: "utf8" }
@@ -47,8 +46,7 @@ var argvToConfig = function (argv) {
             var config = defaultConfig
 
             config.inputFilePath = cmdOrFilePath
-            config.extraRound = argv.indexOf("--extraRound") !== -1
-            config.replace = argv.indexOf("--replace") !== -1
+            config.overwrite = argv.indexOf("--overwrite") !== -1
 
             return config
     }
@@ -109,8 +107,7 @@ var helpString = [
     "",
     "   <filepath>.js           Minify to <filepath>.min.js",
     "",
-    "       [--extra-round]     Run an additional round of compression",
-    "       [--replace]         Overwrite the input file with minified output",
+    "       [--overwrite]         Overwrite the input file with minified output",
     "",
     "   --version                       Show package version",
     "   --help                          Show this help message",
@@ -133,9 +130,9 @@ switch (config.msg) {
 
         var elmJs = fs.readFileSync(config.inputFilePath, fileReadWriteConfig)
 
-        var minElmJs = api.minify(elmJs, config.extraRound ? 3 : 2)
+        var minElmJs = api.minify(elmJs)
 
-        var outputFilePath = config.replace
+        var outputFilePath = config.overwrite
             ? config.inputFilePath
             : config.inputFilePath.replace(".js", "") + ".min.js"
 
