@@ -1,6 +1,6 @@
 {
   "name": "elm-minify",
-  "version": "1.5.1",
+  "version": "2.0.0",
   "description": "Minify compiled Elm modules!",
   "main": "src/api.js",
   "bin": {
@@ -16,7 +16,6 @@
   "keywords": [
     "elm",
     "minify",
-    "uglifyjs",
     "webpack"
   ],
   "author": "",
@@ -26,8 +25,8 @@
   },
   "homepage": "https://github.com/opvasger/elm-minify#readme",
   "dependencies": {
-    "uglify-js": "3.4.9",
-    "webpack-sources": "1.3.0"
+    "webpack-sources": "1.3.0",
+    "terser": "3.10.8"
   },
   "devDependencies": {
     "mocha": "5.2.0"
