@@ -1,47 +1,38 @@
-var ujs = require("uglify-js")
+var ter = require("terser")
 var src = require("webpack-sources")
 
-var toUglifyJsCompressionConfig = function (passes) {
-
-    return {
-        mangle: false,
-        compress: {
-            pure_funcs: [
-                "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9",
-                "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"
-            ],
-            pure_getters: true,
-            keep_fargs: false,
-            unsafe_comps: true,
-            unsafe: true,
-            passes: passes
-        }
-    }
-}
-
-var uglifyJsMangleConfig = {
+var terserConfig = {
+    parse: {
+        ecma: 5
+    },
+    compress: {
+        booleans_as_integers: true,
+        hoist_funs: true,
+        unsafe_methods: true,
+        ecma: 6,
+        pure_funcs: [
+            "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9",
+            "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"
+        ],
+        pure_getters: true,
+        keep_fargs: false,
+        unsafe_comps: true,
+        unsafe: true,
+        passes: 3
+    },
     mangle: true,
-    compress: false
-}
-
-var minify = function (elmJs, compressionPasses) {
-
-    var compressionResult = ujs.minify(elmJs,
-        toUglifyJsCompressionConfig(compressionPasses)
-    )
-
-    var mangleResult = ujs.minify(compressionResult.code,
-        uglifyJsMangleConfig
-    )
-
-    return mangleResult.code
-}
-
-var toWebpackPluginConfig = function (obj) {
-
-    return {
-        extraRound: obj && obj.extraRound === true
+    output: {
+        ecma: 5
     }
+}
+
+var minify = function (elmJs) {
+
+    var result = ter.minify(elmJs, terserConfig)
+
+    if (result.error) throw result.error;
+
+    return result.code
 }
 
 var isCompilingToProduction = function (compiler) {
@@ -51,7 +42,7 @@ var isCompilingToProduction = function (compiler) {
         && compiler.options.mode === "production"
 }
 
-var isOptimizedElmLoader = function (loader) {
+var isElmWebpackLoaderWithOptimizeFlag = function (loader) {
 
     return loader
         && loader.loader
@@ -60,11 +51,9 @@ var isOptimizedElmLoader = function (loader) {
         && loader.options.optimize === true
 }
 
-var WebpackPlugin = function (obj) {
+var WebpackPlugin = function () {
 
     var tapConfig = { name: "elm-minify" }
-
-    var config = toWebpackPluginConfig(obj)
 
     this.apply = function (compiler) {
 
@@ -76,9 +65,9 @@ var WebpackPlugin = function (obj) {
 
                 modules.forEach(function (module) {
 
-                    if (module.loaders === undefined || module.loaders.findIndex(isOptimizedElmLoader) === -1) return;
+                    if (module.loaders === undefined || module.loaders.findIndex(isElmWebpackLoaderWithOptimizeFlag) === -1) return;
 
-                    module._source = new src.RawSource(minify(module._source.source(), config.extraRound ? 3 : 2))
+                    module._source = new src.RawSource(minify(module._source.source()))
                 })
             })
         })
@@ -86,8 +75,7 @@ var WebpackPlugin = function (obj) {
 }
 
 module.exports = {
-    toUglifyJsCompressionConfig: toUglifyJsCompressionConfig,
-    uglifyJsMangleConfig: uglifyJsMangleConfig,
+    terserConfig: terserConfig,
     WebpackPlugin: WebpackPlugin,
     minify: minify
 }
