@@ -2,8 +2,14 @@ var ter = require("terser")
 var src = require("webpack-sources")
 
 var terserConfig = {
-    mangle: true,
+    parse: {
+        ecma: 5
+    },
     compress: {
+        booleans_as_integers: true,
+        hoist_funs: true,
+        unsafe_methods: true,
+        ecma: 6,
         pure_funcs: [
             "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9",
             "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"
@@ -12,7 +18,11 @@ var terserConfig = {
         keep_fargs: false,
         unsafe_comps: true,
         unsafe: true,
-        passes: 2
+        passes: 3
+    },
+    mangle: true,
+    output: {
+        ecma: 5
     }
 }
 
