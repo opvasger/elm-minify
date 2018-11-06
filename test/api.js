@@ -1,8 +1,12 @@
+var fs = require("fs")
 var is = require("assert")
 var ter = require("terser")
 var wp = require("webpack")
 
 var api = require("../src/api.js")
+
+var compiledApp = require("../examples/withScript/dist/index.js")
+var minifiedApp = require("../examples/withScript/dist/index.min.js")
 
 describe("Node.js API", function () {
 
@@ -38,9 +42,20 @@ describe("Node.js API", function () {
 
     describe("minify", function () {
 
-        it("should have tests", function () {
+        var compiledElmPath = "examples/withScript/dist/index.js"
 
-            is.strictEqual(true, false, "no tests yet...")
+        var compiledElm = fs.readFileSync(compiledElmPath, { encoding: "utf8" })
+        var minifiedElm = api.minify(compiledElm)
+
+        it("should remove some JavaScript", function () {
+
+            is.strictEqual(compiledElm.length > minifiedElm.length, true, "The 'minify' API doesn't seem to remove any JavaScript")
+        })
+
+        it("should produce code functionally equivalent to its input", function () {
+
+            is.strictEqual(typeof compiledApp.Elm.Main.init, "function", "The compiled Elm module is broken")
+            is.strictEqual(typeof minifiedApp.Elm.Main.init, "function", "The minified Elm module is broken")
         })
     })
 
