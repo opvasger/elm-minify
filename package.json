@@ -7,9 +7,14 @@
     "elm-minify": "bin/cli.js"
   },
   "scripts": {
-    "test": "mocha test",
-    "preperf": "cd examples/withScript && ./build.sh",
-    "perf": "nodemon perf/api.js"
+    "test": "mocha",
+    "test:watch": "mocha --watch",
+    "perf": "node perf/api.js",
+    "perf:watch": "nodemon perf/api.js",
+    "build:example": "cd examples/withScript && ./build.sh",
+    "": "",
+    "preperf": "npm run build:example",
+    "preperf:watch": "npm run build:example"
   },
   "repository": {
     "type": "git",
