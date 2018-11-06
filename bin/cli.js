@@ -6,81 +6,94 @@ var zlib = require("zlib")
 var pkg = require("../package.json")
 var api = require("../src/api.js")
 
-var Msg = {
-    PrintHelp: 0,
-    PrintVersion: 1,
-    MinifyFile: 2
+var inputArg = process.argv[2] || ""
+
+switch (inputArg) {
+
+    case "--version":
+        return console.log(pkg.version)
+
+    case "--help":
+        return console.log(toHelp(pkg.version))
+
+    default:
+
+        var inputFilePath = inputArg.indexOf(".js") !== -1
+            ? inputArg
+            : "dist/index.js"
+
+        var inputFileSize = fs.lstatSync(inputFilePath).size
+        var elmJs = fs.readFileSync(inputFilePath, { encoding: "utf8" })
+        var minElmJs = api.minify(elmJs)
+
+        var outputFilePath = process.argv.indexOf("--overwrite") !== -1
+            ? inputFilePath
+            : inputFilePath.replace(".js", "") + ".min.js"
+
+        fs.writeFileSync(outputFilePath, minElmJs, { encoding: "utf8" })
+
+        var outputFileSize = fs.lstatSync(outputFilePath).size
+        var outputFileGzipSize = zlib.gzipSync(minElmJs).byteLength
+
+        return process.argv.indexOf("--silent") !== -1 || console.log(toResult([
+            ["input", inputFilePath, inputFileSize],
+            ["output", outputFilePath, outputFileSize],
+            ["gzip", "", outputFileGzipSize]
+        ]))
 }
 
-var defaultConfig = {
-    msg: Msg.MinifyFile,
-    inputFilePath: "dist/index.js",
-    overwrite: false
+function toHelp(version) {
+
+    return [
+        "",
+        "   elm-minify " + version,
+        "",
+        "Usage:",
+        "",
+        "   elm-minify <input>              Minify compiled Elm modules!",
+        "",
+        "<input>:                           Defaults to 'dist/index.js'",
+        "",
+        "   --version                       Show package version",
+        "   --help                          Show this help message",
+        "   [<filepath>.js] [<config>...]   Minify to <filepath>.min.js",
+        "",
+        "<config>:",
+        "",
+        "   --overwrite                     Minify to <filepath>.js",
+        "   --silent                        Disable console output",
+        ""
+    ].join("\n")
 }
 
-var fileReadWriteConfig = { encoding: "utf8" }
+function toResult(srcPathSizes) {
 
-var toKb = function (byteLength) {
+    function padText(text, length, toRight) {
 
-    return byteLength / 1000
-}
+        var lengthDiff = length - text.length
 
-var toString = function (a) {
-    return a + ""
-}
+        if (lengthDiff > 0) {
 
-var argvToConfig = function (argv) {
+            return toRight
+                ? " ".repeat(lengthDiff).concat(text)
+                : text.concat(" ".repeat(lengthDiff))
+        }
+        else if (lengthDiff < 0) {
 
-    var cmdOrFilePath = argv[2]
+            return text.slice(0, length)
+        }
+        else {
 
-    switch (cmdOrFilePath) {
-
-        case "--help":
-            return { msg: Msg.PrintHelp }
-
-        case "--version":
-            return { msg: Msg.PrintVersion }
-
-        default:
-
-            var config = defaultConfig
-
-            config.inputFilePath = cmdOrFilePath
-            config.overwrite = argv.indexOf("--overwrite") !== -1
-
-            return config
+            return text
+        }
     }
 
-}
-
-var padString = function (text, length, toRight) {
-
-    var lengthDiff = length - text.length
-
-    if (lengthDiff > 0) {
-
-        return toRight
-            ? " ".repeat(lengthDiff).concat(text)
-            : text.concat(" ".repeat(lengthDiff))
-    }
-    else if (lengthDiff < 0) {
-
-        return text.slice(0, length)
-    }
-    else {
-
-        return text
-    }
-}
-
-var toResultString = function (srcPathSizeArray) {
-
-    var toResultEntry = function (srcPathSize) {
+    function toResultEntry(srcPathSize) {
 
         return "│ "
-            + padString(srcPathSize[0], 6, true) + " │ "
-            + padString(srcPathSize[1], 18, false) + " │ "
-            + padString(srcPathSize[2], 10, true) + " │"
+            + padText(srcPathSize[0], 6, true) + " │ "
+            + padText(srcPathSize[1], 18, false) + " │ "
+            + padText(srcPathSize[2] / 1000 + "", 10, true) + " │"
     }
 
     return [
@@ -88,62 +101,9 @@ var toResultString = function (srcPathSizeArray) {
         "│ source │ rel path           │    kb size │",
         "├────────┼────────────────────┼────────────┤",
     ]
-        .concat(srcPathSizeArray.map(toResultEntry))
+        .concat(srcPathSizes.map(toResultEntry))
         .concat([
             "└────────┴────────────────────┴────────────┘"
         ])
         .join("\n")
-}
-
-var helpString = [
-    "",
-    "   elm-minify " + pkg.version,
-    "",
-    "Usage:",
-    "",
-    "   elm-minify <input>",
-    "",
-    "<input>:                   Defaults to 'dist/index.js'",
-    "",
-    "   <filepath>.js           Minify to <filepath>.min.js",
-    "",
-    "       [--overwrite]         Overwrite the input file with minified output",
-    "",
-    "   --version                       Show package version",
-    "   --help                          Show this help message",
-    ""
-].join("\n")
-
-var config = argvToConfig(process.argv)
-
-switch (config.msg) {
-
-    case Msg.PrintHelp:
-        return console.log(helpString)
-
-    case Msg.PrintVersion:
-        return console.log(pkg.version)
-
-    case Msg.MinifyFile:
-
-        var inputFileSize = fs.lstatSync(config.inputFilePath).size
-
-        var elmJs = fs.readFileSync(config.inputFilePath, fileReadWriteConfig)
-
-        var minElmJs = api.minify(elmJs)
-
-        var outputFilePath = config.overwrite
-            ? config.inputFilePath
-            : config.inputFilePath.replace(".js", "") + ".min.js"
-
-        fs.writeFileSync(outputFilePath, minElmJs, fileReadWriteConfig)
-
-        return console.log(toResultString([
-            ["input", config.inputFilePath, toString(toKb(inputFileSize))],
-            ["output", outputFilePath, toString(toKb(fs.lstatSync(outputFilePath).size))],
-            ["gzip", "", toString(toKb(zlib.gzipSync(minElmJs).byteLength))]
-        ]))
-
-    default:
-        throw Error("Invalid configuration message", config)
 }
