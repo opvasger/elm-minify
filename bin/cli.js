@@ -56,7 +56,7 @@ function toHelp(version) {
         "",
         "   --version                       Show package version",
         "   --help                          Show this help message",
-        "   <filepath>.js [<config>...]     Minify to <filepath>.min.js",
+        "   [<filepath>.js] [<config>...]   Minify to <filepath>.min.js",
         "",
         "<config>:",
         "",
