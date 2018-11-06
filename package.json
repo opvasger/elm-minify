@@ -7,8 +7,9 @@
     "elm-minify": "bin/cli.js"
   },
   "scripts": {
-    "test": "mocha",
-    "perf": "node perf/api.js"
+    "test": "mocha test",
+    "preperf": "cd examples/withScript && ./build.sh",
+    "perf": "nodemon perf/api.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "terser": "3.10.8"
   },
   "devDependencies": {
-    "mocha": "5.2.0"
+    "mocha": "5.2.0",
+    "nodemon": "1.18.6"
   }
 }
