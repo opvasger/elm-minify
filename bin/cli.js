@@ -90,10 +90,16 @@ function toResult(srcPathSizes) {
 
     function toResultEntry(srcPathSize) {
 
+        var src = srcPathSize[0],
+            path = srcPathSize[1],
+            size = srcPathSize[2],
+            space = " │ ",
+            endSpace = " │"
+
         return "│ "
-            + padText(srcPathSize[0], 6, true) + " │ "
-            + padText(srcPathSize[1], 18, false) + " │ "
-            + padText(srcPathSize[2] / 1000 + "", 10, true) + " │"
+            + padText(src, 6, true) + space
+            + padText(path, 18, false) + space
+            + padText(size / 1000 + "", 10, true) + endSpace
     }
 
     return [

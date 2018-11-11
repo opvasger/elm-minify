@@ -12,7 +12,6 @@
     "perf": "node perf/api.js",
     "perf:watch": "nodemon perf/api.js",
     "build:example": "cd examples/withScript && npm i -y && ./build.sh",
-    "": "",
     "preperf": "npm run build:example",
     "preperf:watch": "npm run build:example",
     "pretest": "npm run build:example",

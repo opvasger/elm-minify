@@ -13,16 +13,20 @@ var start = perf.now()
 var minifiedElm = api.minify(compiledElm)
 var duration = perf.now() - start
 
-var minifiedElmSize = buff.byteLength(minifiedElm)
+var minifiedElmSize = buff.byteLength(minifiedElm, "utf8")
 var sizeDifference = compiledElmSize - minifiedElmSize
 
 console.log([
     "",
     "   Performance (based on '" + compiledElmPath + "'):",
     "",
-    "       time to minify   ~" + Math.round(duration) + "ms",
-    "",
-    "       size reduction   ~" + (sizeDifference / 1000) + "kb",
+    "       size difference  ~" + (sizeDifference / 1000) + "kb",
     "                        ~" + Math.round(compiledElmSize / minifiedElmSize * 10) / 10 + "x",
+    "",
+    "       minified size    ~" + minifiedElmSize / 1000 + "kb",
+    "",
+    "       compiled size    ~" + compiledElmSize / 1000 + "kb",
+    "",
+    "       time to minify   ~" + Math.round(duration) + "ms",
     ""
 ].join("\n"))
