@@ -6,7 +6,7 @@ Minify compiled Elm modules!
 
 ![](/example.gif)
 
-Running `elm make --optimize <FILENAME>` doesn't produce particularily small assets on its own. Running `elm-minify` on these assets makes them **~6.5 times smaller** for my examples.
+Running `elm make --optimize <FILENAME>` doesn't produce particularily small assets on its own. Running `elm-minify` on these assets makes them more than **6 times smaller** for my examples.
 
 This package aims to provide whatever you need to minify the assets produced by the Elm compiler.
 
@@ -23,9 +23,10 @@ elm make --optimize --output=dist/main.js
 #3 minify to "dist/main.min.js"
 elm-minify dist/main.js
 ```
-- [Parcel](https://parceljs.org/) builds and minifies Elm code out of the box
 
 - `elm-minify` can be plugged into [Webpack](https://webpack.js.org/) using [this Node.js API](https://github.com/opvasger/elm-minify#nodejs-api)
+
+- [Parcel](https://parceljs.org/) doesn't require `elm-minify`, as it builds and minifies Elm code out of the box
 
 - More optimizations for Elm can be found in [the official guide](https://guide.elm-lang.org/optimization/)
 

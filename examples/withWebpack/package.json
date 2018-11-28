@@ -1,6 +1,6 @@
 {
   "name": "with-webpack",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Plug elm-minify into webpack!",
   "scripts": {
     "build": "webpack --mode=production"
@@ -10,7 +10,7 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "elm-webpack-loader": "5.0.0",
-    "webpack": "4.20.2",
+    "webpack": "4.26.1",
     "webpack-cli": "3.1.2"
   }
 }
