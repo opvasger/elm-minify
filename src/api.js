@@ -6,7 +6,6 @@ var terserConfig = {
         ecma: 5
     },
     compress: {
-        booleans_as_integers: true,
         hoist_funs: true,
         unsafe_methods: true,
         ecma: 6,
