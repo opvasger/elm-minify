@@ -6,7 +6,7 @@ Minify compiled Elm modules!
 
 ![](/example.gif)
 
-Running `elm make --optimize <FILENAME>` doesn't produce particularily small assets on its own. Running `elm-minify` on these assets makes them more than **6 times smaller** for my examples.
+Running `elm make --optimize <ELM MODULE>` doesn't produce particularily small assets on its own. Running `elm-minify` on these assets makes them more than **6 times smaller** for my examples.
 
 This package aims to provide whatever you need to minify the assets produced by the Elm compiler.
 
