@@ -2,13 +2,9 @@ var ter = require("terser")
 var src = require("webpack-sources")
 
 var terserConfig = {
-    parse: {
-        ecma: 5
-    },
+    ecma: 5,
     compress: {
-        hoist_funs: true,
-        unsafe_methods: true,
-        ecma: 6,
+        unsafe_arrows: false,
         pure_funcs: [
             "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9",
             "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"
@@ -19,10 +15,7 @@ var terserConfig = {
         unsafe: true,
         passes: 3
     },
-    mangle: true,
-    output: {
-        ecma: 5
-    }
+    mangle: true
 }
 
 var minify = function (elmJs) {
