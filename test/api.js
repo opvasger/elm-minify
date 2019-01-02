@@ -2,6 +2,8 @@ var fs = require("fs")
 var is = require("assert")
 var ter = require("terser")
 var wp = require("webpack")
+var ugl = require("uglify-js")
+var buff = require("buffer").Buffer
 
 var api = require("../src/api.js")
 
@@ -47,15 +49,48 @@ describe("Node.js API", function () {
         var compiledElm = fs.readFileSync(compiledElmPath, { encoding: "utf8" })
         var minifiedElm = api.minify(compiledElm)
 
-        it("should remove some JavaScript", function () {
+        it("removes some JavaScript", function () {
 
-            is.strictEqual(compiledElm.length > minifiedElm.length, true, "The 'minify' API doesn't seem to remove any JavaScript")
+            is.strictEqual(
+                buff.byteLength(compiledElm, "utf8") > buff.byteLength(minifiedElm, "utf8"),
+                true,
+                "The 'minify' API doesn't seem to remove any JavaScript"
+            )
         })
 
-        it("should produce code functionally equivalent to its input", function () {
+        it("produces code functionally equivalent to its input", function () {
 
             is.strictEqual(typeof compiledApp.Elm.Main.init, "function", "The compiled Elm module is broken")
             is.strictEqual(typeof minifiedApp.Elm.Main.init, "function", "The minified Elm module is broken")
+        })
+
+        it("produces code that is at least as small as with '/original.sh'", function () {
+
+            var uglifyCompressionConfig = {
+                compress: {
+                    pure_funcs: [
+                        "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9",
+                        "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"
+                    ],
+                    pure_getters: true,
+                    keep_fargs: false,
+                    unsafe_comps: true,
+                    unsafe: true
+                },
+                mangle: false
+            }
+
+            var uglifyMangleConfig = {
+                mangle: true
+            }
+
+            var uglifiedElm = ugl.minify(ugl.minify(compiledElm, uglifyCompressionConfig).code, uglifyMangleConfig).code
+
+            is.strictEqual(
+                buff.byteLength(minifiedElm, "utf8") <= buff.byteLength(uglifiedElm, "utf8"),
+                true,
+                "The minification process isn't as efficient as '/original.sh'"
+            )
         })
     })
 
