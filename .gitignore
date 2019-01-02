@@ -2,3 +2,7 @@ node_modules
 dist
 elm-stuff
 .DS_Store
+
+# SPA example
+elm.js
+elm.min.js
