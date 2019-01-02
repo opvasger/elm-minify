@@ -2,9 +2,8 @@ var ter = require("terser")
 var src = require("webpack-sources")
 
 var terserConfig = {
-    ecma: 5,
+    ecma: 3,
     compress: {
-        unsafe_arrows: false,
         pure_funcs: [
             "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9",
             "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"
