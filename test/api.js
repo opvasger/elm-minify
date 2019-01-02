@@ -49,10 +49,12 @@ describe("Node.js API", function () {
         var compiledElm = fs.readFileSync(compiledElmPath, { encoding: "utf8" })
         var minifiedElm = api.minify(compiledElm)
 
+        var minifiedSize = buff.byteLength(minifiedElm, "utf8")
+
         it("removes some JavaScript", function () {
 
             is.strictEqual(
-                buff.byteLength(compiledElm, "utf8") > buff.byteLength(minifiedElm, "utf8"),
+                buff.byteLength(compiledElm, "utf8") > minifiedSize,
                 true,
                 "The 'minify' API doesn't seem to remove any JavaScript"
             )
@@ -86,12 +88,13 @@ describe("Node.js API", function () {
 
             var uglifiedElm = ugl.minify(ugl.minify(compiledElm, uglifyCompressionConfig).code, uglifyMangleConfig).code
 
+            var uglifiedSize = buff.byteLength(uglifiedElm, "utf8")
+
             is.strictEqual(
-                buff.byteLength(minifiedElm, "utf8") <= buff.byteLength(uglifiedElm, "utf8"),
+                minifiedSize <= uglifiedSize,
                 true,
-                "The minification process isn't as efficient as '/original.sh'"
+                "The minification process is " + Math.abs(uglifiedSize - minifiedSize) + " bytes less efficient than '/original.sh'."
             )
         })
     })
-
 })
