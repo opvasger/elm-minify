@@ -1,6 +1,6 @@
 {
   "name": "elm-minify",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Minify compiled Elm modules!",
   "main": "src/api.js",
   "bin": {
@@ -13,8 +13,8 @@
     "perf:watch": "nodemon perf/api.js",
     "build:example": "cd examples/withScript && npm i -y && ./build.sh",
     "build:spa-example": "cd examples/withSpaExample && ./build.sh",
-    "preperf": "npm run build:example",
-    "preperf:watch": "npm run build:example",
+    "preperf": "npm run build:spa-example",
+    "preperf:watch": "npm run build:spa-example",
     "pretest": "npm run build:example",
     "pretest:watch": "npm run build:example"
   },

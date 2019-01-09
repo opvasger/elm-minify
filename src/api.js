@@ -12,7 +12,7 @@ var terserConfig = {
         keep_fargs: false,
         unsafe_comps: true,
         unsafe: true,
-        passes: 3
+        passes: 2
     },
     mangle: true
 }

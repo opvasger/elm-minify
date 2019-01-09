@@ -4,7 +4,7 @@ var perf = require("perf_hooks").performance
 
 var api = require("../src/api.js")
 
-var compiledElmPath = "examples/withScript/dist/index.js"
+var compiledElmPath = "examples/withSpaExample/elm.js"
 
 var compiledElm = fs.readFileSync(compiledElmPath, { encoding: "utf8" })
 var compiledElmSize = buff.byteLength(compiledElm, "utf8")
