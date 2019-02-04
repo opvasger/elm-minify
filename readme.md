@@ -1,3 +1,7 @@
+>This project is DEPRECATED!
+>
+>I suggest using the [Google Closure Compiler](https://www.npmjs.com/package/google-closure-compiler) instead!
+
 # Elm Minify
 Minify compiled Elm modules!
 
