@@ -1,6 +1,12 @@
 >This project is DEPRECATED!
+
+>This is because I've reached the same conclusions that Christian Charukiewicz describes [here](https://discourse.elm-lang.org/t/comparing-uglifyjs-and-google-closure-compiler/2883/5?u=opvasger).
 >
->I suggest using the [Google Closure Compiler](https://www.npmjs.com/package/google-closure-compiler) instead!
+>I suggest using the [Google Closure Compiler](https://www.npmjs.com/package/google-closure-compiler) instead, because it's **great**!
+
+
+
+
 
 # Elm Minify
 Minify compiled Elm modules!
