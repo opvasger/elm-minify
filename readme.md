@@ -2,7 +2,7 @@
 
 >This is because I've reached the same conclusions that Christian Charukiewicz describes [here](https://discourse.elm-lang.org/t/comparing-uglifyjs-and-google-closure-compiler/2883/5?u=opvasger).
 >
->I suggest using the [Google Closure Compiler](https://www.npmjs.com/package/google-closure-compiler) instead, because it's **great**!
+>I suggest using the [Google Closure Compiler](https://www.npmjs.com/package/google-closure-compiler) instead, because it's **great**! There's a [plugin for Webpack](https://github.com/webpack-contrib/closure-webpack-plugin) too!
 
 
 
